@@ -15,10 +15,12 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/photos', photoRoutes);
 
+const PORT = process.env.PORT || 5000;
+
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('MongoDB connected');
-    app.listen(process.env.PORT, () =>
+    app.listen(PORT, () =>
       console.log(`Server running on http://localhost:${process.env.PORT}`)
     );
   })
