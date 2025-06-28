@@ -5,20 +5,20 @@ import Gallery from './components/Gallery/gallery.jsx';
 import Upload from './components/Upload/upload.jsx';
 import Header from './components/Header/header.jsx';
 import Footer from './components/Footer/footer.jsx';
+import LandPage from './components/LandPage/landpage.jsx';
 import './App.css'
 
 function App() {
   return (
     <>
     <BrowserRouter>
-      <Header />
       <Routes>
+        <Route path='/' element={<LandPage />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/upload" element={<Upload />} />
       </Routes>
-      <Footer />
     </BrowserRouter>
     </>
   )

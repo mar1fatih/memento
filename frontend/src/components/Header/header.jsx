@@ -15,7 +15,7 @@ function Header() {
             <Link to="/login">Login</Link> |{" "}
             <Link to="/gallery">Gallery</Link> |{" "}
             <Link to="/upload">Upload</Link> |{" "}
-            <button onClick={logout}>Logout</button>
+            <button className="logout-btn" onClick={logout}>Logout</button>
         </nav>
     </div>
   );
