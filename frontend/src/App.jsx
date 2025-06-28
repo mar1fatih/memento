@@ -1,11 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/navbar.jsx';
-import Register from './components/register.jsx';
-import Login from './components/login.jsx';
-import Gallery from './components/gallery.jsx';
-import Upload from './components/upload.jsx';
-import Header from './components/header.jsx';
-import Footer from './components/footer.jsx';
+import Register from './components/Register/register.jsx';
+import Login from './components/Login/login.jsx';
+import Gallery from './components/Gallery/gallery.jsx';
+import Upload from './components/Upload/upload.jsx';
+import Header from './components/Header/header.jsx';
+import Footer from './components/Footer/footer.jsx';
 import './App.css'
 
 function App() {
@@ -13,7 +12,6 @@ function App() {
     <>
     <Header />
     <Router>
-      <Navbar />
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
