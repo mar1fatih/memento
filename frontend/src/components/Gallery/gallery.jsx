@@ -7,7 +7,10 @@ function Gallery() {
   useEffect(() => {
     API.get('/photos')
       .then((res) => setPhotos(res.data))
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        if (err.response && err.response.status === 401) window.location.href = '/login';
+        else console.error('Failed to fetch photos:', err);
+      });
   }, []);
 
   return (
