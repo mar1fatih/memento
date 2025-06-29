@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import API from '../../api/api.js';
+import Header from '../Header/header.jsx';
 
 function Gallery() {
   const [photos, setPhotos] = useState([]);
@@ -15,6 +16,7 @@ function Gallery() {
 
   return (
     <div>
+      <Header />
       <h2>Gallery</h2>
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
         {photos.map((photo) => (
