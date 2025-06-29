@@ -11,7 +11,7 @@ function LandPage() {
       <h1>Your Memories, Always Accessible</h1>
       <p>Memento helps you save, organize, and relive your precious moments effortlessly.</p>
       <div className="hero-buttons">
-        <a href="#" className="btn-primary">Get Started</a>
+        <a href="/gallery" className="btn-primary">Get Started</a>
         <a href="#" className="btn-secondary">See How It Works</a>
       </div>
     </div>
