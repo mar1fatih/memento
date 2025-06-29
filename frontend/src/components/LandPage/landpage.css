@@ -44,14 +44,18 @@ a {
 
 .hero-content h1 {
     font-size: 3em;
-    margin-bottom: 20px;
+    margin: 20px 0px 20px 0px;
 }
 
 .hero-content p {
     font-size: 1.2em;
     margin-bottom: 30px;
 }
-
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
 .btn-primary, .btn-secondary {
     display: inline-block;
     padding: 12px 24px;
