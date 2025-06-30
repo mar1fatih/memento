@@ -4,9 +4,9 @@ import User from '../models/User.js';
 
 export const register = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, firstName, lastName, email, password } = req.body;
     const hashed = await bcrypt.hash(password, 10);
-    const user = new User({ email, password: hashed });
+    const user = new User({ username, firstName, lastName, email, password: hashed });
     await user.save();
     res.status(201).json({ message: 'User registered' });
   } catch (err) {
@@ -16,8 +16,8 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const { emailOrUsername, password } = req.body;
+    const user = await User.findOne({ email: emailOrUsername }) || await User.findOne({ username: emailOrUsername });
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     const match = await bcrypt.compare(password, user.password);
