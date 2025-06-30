@@ -6,7 +6,26 @@ import './Login.css';
 
 
 function Login() {
-    useEffect(() => {
+  const [usernameOrEmail, setUsernameOrEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await API.post('/auth/login', {
+        emailOrUsername: usernameOrEmail,
+        password: password
+      });
+      localStorage.setItem('token', response.data.token);
+      window.location.href = '/gallery';
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        alert('Invalid credentials. Please try again.');
+      }
+    }
+  };
+
+  useEffect(() => {
     // Create twinkling stars
     const starsContainer = document.getElementById('stars');
     const starCount = 100;
@@ -30,24 +49,7 @@ function Login() {
       
       starsContainer.appendChild(star);
     }
-
-    // Add floating animation to login container
-    const loginContainer = document.querySelector('.login-container');
-    
-    const floatAnimation = () => {
-      loginContainer.style.transform = 'translateY(-5px)';
-      setTimeout(() => {
-        loginContainer.style.transform = 'translateY(5px)';
-        setTimeout(() => {
-          loginContainer.style.transform = 'translateY(0)';
-        }, 2000);
-      }, 2000);
-    };
-    // Start the floating animation every 2 seconds
-    const animationInterval = setInterval(floatAnimation, 2000);
-    
-    // Cleanup interval on component unmount
-    return () => clearInterval(animationInterval);
+    return () => clearInterval();
   }, []);
 
   return (
@@ -63,12 +65,12 @@ function Login() {
         
         <form>
           <div className="input-group">
-            <input type="text" id="username" required />
+            <input type="text" id="username" required onChange={(e) => setUsernameOrEmail(e.target.value)} />
             <label htmlFor="username">Username or Email</label>
           </div>
           
           <div className="input-group">
-            <input type="password" id="password" required />
+            <input type="password" id="password" required onChange={(e) => setPassword(e.target.value)} />
             <label htmlFor="password">Password</label>
           </div>
           
@@ -78,7 +80,7 @@ function Login() {
             </div>
           </div>
           
-          <button type="submit" className="login-button">Login</button>
+          <button type="submit" className="login-button" onClick={handleLogin}>Login</button>
           
           <div className="signup-link">
             Don't have an account? <a href="/register">Sign up</a>
