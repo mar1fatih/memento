@@ -5,6 +5,11 @@ import Header from '../Header/header.jsx';
 function Gallery() {
   const [photos, setPhotos] = useState([]);
 
+  const logout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+  };
+
   useEffect(() => {
     API.get('/photos')
       .then((res) => setPhotos(res.data))
@@ -17,6 +22,9 @@ function Gallery() {
   return (
     <div>
       <Header />
+      <div className='logout-btn'>
+        <button onClick={logout}>Logout</button>
+      </div>
       <h2>Gallery</h2>
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
         {photos.map((photo) => (
