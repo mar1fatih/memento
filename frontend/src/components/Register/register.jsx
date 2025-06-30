@@ -1,9 +1,15 @@
 import { useEffect, useState } from 'react';
+import API from '../../api/api';
 import './Register.css';
 
 const Register = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordStrength, setPasswordStrength] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // Create twinkling stars
@@ -57,10 +63,33 @@ const Register = () => {
     }
   }, [password]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     // Handle registration logic here
-    console.log('Registration submitted');
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+    const username = email.split('@')[0];
+    console.log(username);
+    try {
+      const response = await API.post('/auth/register', {
+        username,
+        firstName,
+        lastName,
+        email,
+        password
+      });
+      setIsLoading(false);
+      if (response.status === 201) {
+        alert('Registration successful! Please log in.');
+        window.location.href = '/login';
+      }
+    } catch (error) {
+        setIsLoading(false);
+        alert('Email already exists');
+    }
   };
 
   return (
@@ -76,18 +105,18 @@ const Register = () => {
         <form onSubmit={handleSubmit}>
           <div className="name-fields">
             <div className="register-input-group">
-              <input type="text" id="firstName" required />
+              <input type="text" id="firstName" required onChange={(e) => setFirstName(e.target.value)} />
               <label htmlFor="firstName">First Name</label>
             </div>
             
             <div className="register-input-group">
-              <input type="text" id="lastName" required />
+              <input type="text" id="lastName" required onChange={(e) => setLastName(e.target.value)} />
               <label htmlFor="lastName">Last Name</label>
             </div>
           </div>
           
           <div className="register-input-group">
-            <input type="email" id="email" required />
+            <input type="email" id="email" required onChange={(e) => setEmail(e.target.value)} />
             <label htmlFor="email">Email Address</label>
           </div>
           
@@ -106,7 +135,7 @@ const Register = () => {
           </div>
           
           <div className="register-input-group">
-            <input type="password" id="confirmPassword" required />
+            <input type="password" id="confirmPassword" required onChange={(e) => setConfirmPassword(e.target.value)} />
             <label htmlFor="confirmPassword">Confirm Password</label>
           </div>
           
@@ -116,11 +145,15 @@ const Register = () => {
               I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
             </label>
           </div>
-          
-          <button type="submit" className="register-button">Register</button>
+
+          {isLoading ? (
+            <div className="spinner"></div>
+            ) : (
+              <button type="submit" className="register-button">Register</button>
+              )}
           
           <div className="login-link">
-            Already have an account? <a href="#">Login</a>
+            Already have an account? <a href="/login">Login</a>
           </div>
         </form>
       </div>

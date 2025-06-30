@@ -7,9 +7,11 @@ import './Login.css';
 function Login() {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const response = await API.post('/auth/login', {
         emailOrUsername: usernameOrEmail,
@@ -18,6 +20,7 @@ function Login() {
       localStorage.setItem('token', response.data.token);
       window.location.href = '/gallery';
     } catch (error) {
+      setIsLoading(false);
       if (error.response && error.response.status === 401) {
         alert('Invalid credentials. Please try again.');
       }
@@ -79,8 +82,12 @@ function Login() {
             </div>
           </div>
           
-          <button type="submit" className="login-button" onClick={handleLogin}>Login</button>
-          
+          {isLoading ? (
+            <div className="spinner"></div>
+            ) : (
+            <button type="submit" className="login-button" onClick={handleLogin}>Login</button>
+            )}
+        
           <div className="signup-link">
             Don't have an account? <a href="/register">Sign up</a>
           </div>
