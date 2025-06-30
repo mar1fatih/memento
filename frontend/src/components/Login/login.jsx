@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import API from '../../api/api.js';
-import Header from '../Header/header.jsx';
 import { useEffect } from 'react';
 import './Login.css';
 
@@ -54,7 +53,7 @@ function Login() {
 
   return (
     <>
-        <div className="login-body">
+      <div className="login-body">
       <div className="stars" id="stars"></div>
       
       <div className="login-container">
