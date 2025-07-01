@@ -66,13 +66,13 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    // Handle registration logic here
+
     if (password !== confirmPassword) {
       alert("Passwords do not match");
       return;
     }
     const username = email.split('@')[0];
-    console.log(username);
+
     try {
       const response = await API.post('/auth/register', {
         username,
@@ -81,7 +81,6 @@ const Register = () => {
         email,
         password
       });
-      setIsLoading(false);
       if (response.status === 201) {
         alert('Registration successful! Please log in.');
         window.location.href = '/login';
