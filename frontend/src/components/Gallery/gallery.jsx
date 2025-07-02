@@ -15,7 +15,7 @@ function Gallery() {
   };
   const handleUploadClick = () => {
     document.querySelector('.photos-section').style.display = 'none';
-    document.querySelector('.upload-section').style.display = 'block';
+    document.querySelector('.upload-section').style.display = 'flex';
   };
 
   // Handle file upload
@@ -78,16 +78,18 @@ function Gallery() {
             </div>
           </div>
           <div className='upload-section'>
-            <h2>Upload Photo</h2>
-            <form onSubmit={handleUpload}>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => setFile(e.target.files[0])}
-                required
-              />
-              <button type="submit">Upload</button>
-            </form>
+            <div className='upload-form'>
+              <h2>Upload Photo</h2>
+              <form onSubmit={handleUpload}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setFile(e.target.files[0])}
+                  required
+                />
+                <button type="submit">Upload</button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
