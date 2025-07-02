@@ -27,3 +27,53 @@ img {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
 }
+.gallery-body {
+    display: flex;
+    padding-bottom: 7px;
+}
+.nav-bar {
+    background-color: hsl(170, 20%, 88%);
+    height: 500px;
+    width: 230px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+.gallery-container {
+    width: 81%;
+    background: hsl(165, 5.5%, 71.4%);
+    padding: 10px;
+    border-radius: 24px;
+    margin-right: 10px;
+}
+.nav-bar > div {
+    padding: 12px 12px 12px 28px;
+    border-radius: 16px;
+    display: flex;
+    font-weight: 700;
+}
+.photos-nav-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    background-image: url('./src/assets/photos_icon.png');
+    background-size: 40px;
+}
+.upload-nav-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    background-image: url('./src/assets/upload_icon.png');
+    background-size: 30px;
+}
+.photos-nav-icon, .upload-nav-icon {
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.nav-bar > div:hover {
+    background-color: hsl(164, 9.7%, 69.6%);
+    cursor: pointer;
+}
+.upload-section {
+    display: none;
+}
