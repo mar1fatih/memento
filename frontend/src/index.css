@@ -1,5 +1,6 @@
-body {
+body, html {
   margin: 0;
+  height: 100%;
 }
 #root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -10,6 +11,7 @@ body {
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   background-color: hsl(170, 20%, 88%);
+  height: 100%;
 }
 a {
   text-decoration: none;

@@ -33,23 +33,27 @@ img {
 }
 .nav-bar {
     background-color: hsl(170, 20%, 88%);
-    height: 500px;
     padding: 10px;
     display: flex;
     flex-direction: column;
 }
 .gallery-container {
-    width: 100%;
     background: hsl(165, 5.5%, 71.4%);
     padding: 10px;
     border-radius: 24px;
     margin-right: 10px;
+    inset: 90px 0 9px 234px;
+    position: absolute;
+    overflow: auto;
 }
 .nav-bar > div {
     padding: 12px 12px 12px 28px;
     border-radius: 16px;
     display: flex;
     font-weight: 700;
+}
+.photos-nav {
+    background: hsla(176, 37%, 60%, 0.651);
 }
 .photos-nav-icon {
     width: 24px;
@@ -90,5 +94,8 @@ img {
     pointer-events: none;
     visibility: hidden;
     width: 0;
+  }
+  .gallery-container {
+    inset: 90px 0 9px 93px;
   }
 }
