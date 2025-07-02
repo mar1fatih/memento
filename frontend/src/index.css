@@ -6,10 +6,10 @@ body {
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+  color: rgba(55, 53, 53, 0.87);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
- background-color: hsla(239.1, 100%, 50%, 0.34);
+  background-color: hsl(170, 20%, 88%);
 }
 a {
   text-decoration: none;

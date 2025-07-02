@@ -226,12 +226,7 @@
 @media (max-width: 480px) {
     .register-container {
         width: 90%;
-        padding: 30px 20px;
-    }
-    
-    .name-fields {
-        flex-direction: column;
-        gap: 25px;
+        padding: 6px 30px 30px 30px;
     }
 }
 

@@ -8,7 +8,6 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [passwordStrength, setPasswordStrength] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -45,8 +44,6 @@ const Register = () => {
     if (/[0-9]/.test(password)) strength += 20;
     if (/[^A-Za-z0-9]/.test(password)) strength += 20;
 
-    setPasswordStrength(strength);
-
     // Update password strength bar
     const strengthBar = document.querySelector('.password-strength-bar');
     if (strengthBar) {
@@ -69,6 +66,7 @@ const Register = () => {
 
     if (password !== confirmPassword) {
       alert("Passwords do not match");
+      setIsLoading(false);
       return;
     }
     const username = email.split('@')[0];
@@ -87,7 +85,7 @@ const Register = () => {
       }
     } catch (error) {
         setIsLoading(false);
-        alert('Email already exists');
+        alert(error + 'Email already exists');
     }
   };
 

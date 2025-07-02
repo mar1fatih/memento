@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import API from '../../api/api.js';
 import Header from '../Header/header.jsx';
+import './gallery.css';
 
 function Gallery() {
   const [photos, setPhotos] = useState([]);
@@ -24,6 +25,7 @@ function Gallery() {
       <Header />
       <div className='logout-btn'>
         <button onClick={logout}>Logout</button>
+
       </div>
       <h2>Gallery</h2>
       <div style={{ display: 'flex', flexWrap: 'wrap' }}>
