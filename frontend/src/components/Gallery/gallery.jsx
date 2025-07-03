@@ -70,7 +70,7 @@ function Gallery() {
               {photos.map((photo) => (
                 <img
                   key={photo._id}
-                  src={photo.url}
+                  src={photo.optimizedUrl || photo.url}
                   alt=""
                   style={{ width: '200px', margin: '10px' }}
                 />

@@ -11,7 +11,12 @@ export const uploadPhoto = async (req, res) => {
         const photo = new Photo({
           userId: req.user.id,
           url: result.secure_url,
-          public_id: result.public_id
+          public_id: result.public_id,
+          width: result.width,
+          height: result.height,
+          format: result.format,
+          size: result.bytes,
+          optimizedUrl: result.secure_url.replace('/upload/', '/upload/c_scale,h_230/'),
         });
         await photo.save();
         res.status(201).json(photo);
