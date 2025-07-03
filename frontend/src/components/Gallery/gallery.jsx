@@ -8,7 +8,18 @@ function Gallery() {
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
+  // Toggle sidebar visibility
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+  // Close sidebar when overlay is clicked or when the void is clicked
+  const closeSidebar = () => {
+    setIsOpen(false);
+  };
+
+  // switch between photos and upload sections
   const handlephotoClick = () => {
     document.querySelector('.photos-section').style.display = 'block';
     document.querySelector('.upload-section').style.display = 'none';
@@ -37,8 +48,12 @@ function Gallery() {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     API.get('/photos')
-      .then((res) => setPhotos(res.data))
+      .then((res) => {
+        setPhotos(res.data);
+        setIsLoading(false);
+      })
       .catch((err) => {
         if (err.response && err.response.status === 401) window.location.href = '/login';
         else console.error('Failed to fetch photos:', err);
@@ -47,10 +62,14 @@ function Gallery() {
 
   return (
     <div>
+      <div className='menu-bar' style={{ backgroundImage: isOpen ? 'url(./src/assets/close_menu_icon.svg)' : 'url(./src/assets/menu_icon.png)' }} onClick={toggleSidebar}></div>
+      <div className='extended-menu' style={{ left: isOpen ? 0 : '-100%' }}>
+        <div className='menu-items'></div>
+        <div className='menu-void' onClick={closeSidebar}></div>
+      </div>
       <Header />
       <div className='logout-btn'>
         <button onClick={logout}>Logout</button>
-
       </div>
       <div className='gallery-body'>
         <div className='nav-bar'>
@@ -66,16 +85,25 @@ function Gallery() {
         <div className='gallery-container'>
           <div className='photos-section'>
             <h2>Gallery</h2>
-            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-              {photos.map((photo) => (
-                <img
-                  key={photo._id}
-                  src={photo.optimizedUrl || photo.url}
-                  alt=""
-                  style={{ width: '200px', margin: '10px' }}
-                />
-              ))}
-            </div>
+            {isLoading ? (
+              <div className='loading-container'>
+                <div className='loading'>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                {photos.map((photo) => (
+                  <img
+                    key={photo._id}
+                    src={photo.optimizedUrl || photo.url.replace('/upload/', '/upload/c_scale,h_400/')}
+                    alt=""
+                    style={{ height: '200px', margin: '10px' }}
+                  />
+                ))}
+              </div>)}
           </div>
           <div className='upload-section'>
             <div className='upload-form'>
