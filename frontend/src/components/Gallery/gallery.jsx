@@ -9,6 +9,7 @@ function Gallery() {
   const [isLoading, setIsLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [profileHeight, setProfileHeight] = useState('0px');
 
   // Toggle sidebar visibility
   const toggleSidebar = () => {
@@ -47,6 +48,14 @@ function Gallery() {
     window.location.href = '/login';
   };
 
+  const handleProfileClick = () => {
+    if (profileHeight === '0px') {
+      setProfileHeight('250px');
+    } else {
+      setProfileHeight('0px');
+    }
+  }
+
   useEffect(() => {
     setIsLoading(true);
     API.get('/photos')
@@ -55,7 +64,7 @@ function Gallery() {
         setIsLoading(false);
       })
       .catch((err) => {
-        if (err.response && err.response.status === 401) window.location.href = '/login';
+        if (err.response && (err.response.status === 401 || err.response.status === 403)) window.location.href = '/login';
         else console.error('Failed to fetch photos:', err);
       });
   }, [refresh]);
@@ -68,9 +77,12 @@ function Gallery() {
         <div className='menu-void' onClick={closeSidebar}></div>
       </div>
       <Header />
-      <div className='logout-btn'>
-        <button onClick={logout}>Logout</button>
+
+      <div className='profile-header' onClick={handleProfileClick}>
+        <div className='profile-icon' style={{ backgroundImage: 'url(./src/assets/empty_profile_photo.png)' }}></div>
+        <div className='profile-content' style={{ height: profileHeight }}></div>
       </div>
+
       <div className='gallery-body'>
         <div className='nav-bar'>
           <div className='photos-nav' onClick={handlephotoClick}>

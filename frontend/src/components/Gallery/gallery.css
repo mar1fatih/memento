@@ -197,3 +197,34 @@ img {
     width: 40%;
 }
 }
+
+/*profile*/
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    right: 20px;
+    top: 14px;
+    border: solid 1px black;
+}
+
+.profile-icon:hover {
+    background-color: hsla(0, 0%, 0%, 0.228);
+    cursor: pointer;
+}
+
+.profile-content {
+    height: 0px;
+    position: absolute;
+    width: 250px;
+    right: 11px;
+    z-index: 1;
+    border-radius: 21px;
+    transition: all 0.5s ease-in-out;
+    background-color: #dae7e4;
+    box-shadow: -3px 3px 6px rgba(0, 0, 0, 0.79);
+}
