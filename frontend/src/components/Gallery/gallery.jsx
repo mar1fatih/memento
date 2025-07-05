@@ -94,6 +94,7 @@ function Gallery() {
       })
       .catch((err) => {
         if (err.response && (err.response.status === 401 || err.response.status === 403)) window.location.href = '/login';
+        else if (err.message === "Network Error") setTimeout(() => { setRefresh(!refresh) }, 2000);
         else console.error('Failed to fetch photos:', err);
       });
   }, [refresh]);
