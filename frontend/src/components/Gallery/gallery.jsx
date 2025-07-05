@@ -27,11 +27,13 @@ function Gallery() {
     document.querySelector('.photos-section').style.display = 'block';
     document.querySelector('.upload-section').style.display = 'none';
     setGalleryClicked(true);
+    closeSidebar();
   };
   const handleUploadClick = () => {
     document.querySelector('.photos-section').style.display = 'none';
     document.querySelector('.upload-section').style.display = 'flex';
     setGalleryClicked(false);
+    closeSidebar();
   };
 
   // Handle file upload
@@ -80,7 +82,20 @@ function Gallery() {
     <div>
       <div className='menu-bar' style={{ backgroundImage: isOpen ? 'url(./src/assets/close_menu_icon.svg)' : 'url(./src/assets/menu_icon.png)' }} onClick={toggleSidebar}></div>
       <div className='extended-menu' style={{ left: isOpen ? 0 : '-100%' }}>
-        <div className='menu-items'></div>
+
+        <div className='menu-items'>
+          <div className='nav-bar-mobile'>
+            <div className='photos-nav-mobile' onClick={handlephotoClick} style={{ backgroundColor: galleryClicked ? 'hsla(176, 37%, 60%, 0.651)' : 'transparent' }}>
+              <div className='photos-nav-icon-mobile'></div>
+              <div className='photos-text-mobile'> Photos </div>
+            </div>
+            <div className='upload-nav-mobile' onClick={handleUploadClick} style={{ backgroundColor: galleryClicked ? 'transparent' : 'hsla(176, 37%, 60%, 0.651)' }}>
+              <div className='upload-nav-icon-mobile'></div>
+              <div className='upload-text-mobile'> Upload </div>
+            </div>
+          </div>
+        </div>
+
         <div className='menu-void' onClick={closeSidebar}></div>
       </div>
       <Header />
