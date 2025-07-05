@@ -10,6 +10,8 @@ function Gallery() {
   const [refresh, setRefresh] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [profileHeight, setProfileHeight] = useState('0px');
+  const [profileOutside, setProfileOutside] = useState('0%');
+  const [galleryClicked, setGalleryClicked] = useState(true);
 
   // Toggle sidebar visibility
   const toggleSidebar = () => {
@@ -24,10 +26,12 @@ function Gallery() {
   const handlephotoClick = () => {
     document.querySelector('.photos-section').style.display = 'block';
     document.querySelector('.upload-section').style.display = 'none';
+    setGalleryClicked(true);
   };
   const handleUploadClick = () => {
     document.querySelector('.photos-section').style.display = 'none';
     document.querySelector('.upload-section').style.display = 'flex';
+    setGalleryClicked(false);
   };
 
   // Handle file upload
@@ -48,11 +52,14 @@ function Gallery() {
     window.location.href = '/login';
   };
 
+  // Handle profile click to toggle profile content visibility
   const handleProfileClick = () => {
     if (profileHeight === '0px') {
-      setProfileHeight('250px');
+      setProfileHeight('350px');
+      setProfileOutside('100%');
     } else {
       setProfileHeight('0px');
+      setProfileOutside('0%');
     }
   }
 
@@ -78,18 +85,20 @@ function Gallery() {
       </div>
       <Header />
 
-      <div className='profile-header' onClick={handleProfileClick}>
-        <div className='profile-icon' style={{ backgroundImage: 'url(./src/assets/empty_profile_photo.png)' }}></div>
-        <div className='profile-content' style={{ height: profileHeight }}></div>
+      <div className='profile-header'>
+        <div className='profile-icon' style={{ backgroundImage: 'url(./src/assets/empty_profile_photo.png)' }} onClick={handleProfileClick}></div>
+        <div className='outside-profile' style={{ height: profileOutside }} onClick={handleProfileClick}></div>
+        <div className='profile-content' style={{ height: profileHeight }}>
+        </div>
       </div>
 
       <div className='gallery-body'>
         <div className='nav-bar'>
-          <div className='photos-nav' onClick={handlephotoClick}>
+          <div className='photos-nav' onClick={handlephotoClick} style={{ backgroundColor: galleryClicked ? 'hsla(176, 37%, 60%, 0.651)' : 'transparent' }}>
             <div className='photos-nav-icon'></div>
             <div className='photos-text'> Photos </div>
           </div>
-          <div className='upload-nav' onClick={handleUploadClick}>
+          <div className='upload-nav' onClick={handleUploadClick} style={{ backgroundColor: galleryClicked ? 'transparent' : 'hsla(176, 37%, 60%, 0.651)' }}>
             <div className='upload-nav-icon'></div>
             <div className='upload-text'> Upload </div>
           </div>
