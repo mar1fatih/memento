@@ -5,28 +5,32 @@ import './gallery.css';
 
 function Gallery() {
   const [photos, setPhotos] = useState([]); // State to hold the photos fetched from the API
-  const [file, setFile] = useState(null); // State to hold the file selected for upload
+  const [files, setFiles] = useState([]); // State to hold the files selected for upload
   const [isLoading, setIsLoading] = useState(false); // State to hold a value of is loading
   const [isUploading, setIsUploading] = useState(false); // State to hold a value of is uploading
   const [refresh, setRefresh] = useState(false); // State to hold a boolean for refreshing the gallery
   const [isOpen, setIsOpen] = useState(false); // State to hold a boolean for sidebar visibility
-  const [profileHeight, setProfileHeight] = useState('0px'); // State to hold the height of the profile content and the visibility
+  const [profileRight, setProfileRight] = useState('-320px'); // State to hold the right of the profile content and the visibility
   const [profileOutside, setProfileOutside] = useState('0%'); // State to hold the height of the outside profile content and the functionality
   const [galleryClicked, setGalleryClicked] = useState(true); // State to hold a boolean for whether the gallery section is clicked
+  const [progress, setProgress] = useState(0); // State to hold the progress of the upload
 
+  const fileInputRef = useRef(null);
+  const [fileName, setFileName] = useState('');
 
-    const fileInputRef = useRef(null);
-    const [fileName, setFileName] = useState('');
-
-    const handleFileChange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        setFileName(file.name);
-        setFile(file);
-      } else {
-        setFileName('');
-      }
-    };
+  const handleFileChange = (e) => {
+    const files = e.target.files;
+    if (files.length > 0 && files.length < 2) {
+      setFileName(files[0].name);
+      setFiles(files);
+    } else if (files.length >= 2) {
+      setFileName(files.length + ' files selected');
+      setFiles(files);
+    } else {
+      setFileName('');
+      setFiles([]);
+    }
+  };
 
   // Toggle sidebar visibility
   const toggleSidebar = () => {
@@ -56,15 +60,20 @@ function Gallery() {
   const handleUpload = async (e) => {
     e.preventDefault();
     setIsUploading(true);
-    const formData = new FormData();
-    formData.append('photo', file);
-    await API.post('/photos/upload', formData);
-    setFile(null);
+    for (let i = 0; i < files.length; i++) {
+      const formData = new FormData();
+      formData.append('photo', files[i]);
+      setProgress(Math.round(((i + 1) / files.length) * 100));
+      await API.post('/photos/upload', formData);
+    }
+    setFiles([]);
     setFileName('');
     setIsUploading(false);
+    setProgress(0);
     // Refresh the gallery after upload
     setRefresh(!refresh);
-    alert('Uploaded!');
+    if (files.length > 1) alert('All photos uploaded!');
+    else alert('Photo uploaded');
   };
 
   // Logout function to clear token and redirect to login page
@@ -75,11 +84,11 @@ function Gallery() {
 
   // Handle profile click to toggle profile content visibility
   const handleProfileClick = () => {
-    if (profileHeight === '0px') {
-      setProfileHeight('350px');
+    if (profileRight === '-320px') {
+      setProfileRight('11px');
       setProfileOutside('100%');
     } else {
-      setProfileHeight('0px');
+      setProfileRight('-320px');
       setProfileOutside('0%');
     }
   }
@@ -124,7 +133,16 @@ function Gallery() {
       <div className='profile-header'>
         <div className='profile-icon' style={{ backgroundImage: 'url(./src/assets/empty_profile_photo.png)' }} onClick={handleProfileClick}></div>
         <div className='outside-profile' style={{ height: profileOutside }} onClick={handleProfileClick}></div>
-        <div className='profile-content' style={{ height: profileHeight }}>
+        <div className='profile-content' style={{ right: profileRight }}>
+          <div className='profile-content-infos'>
+            <div className='email'>example@gmail.com</div>
+            <div className='profile-picture' style={{ backgroundImage: 'url(./src/assets/empty_profile_photo.png)'}}></div>
+            <div className='first-last-name'>Marouane Fatih</div>
+          </div>
+          <div className='profile-content-chnginfos'>
+            <div className='change-info'></div>
+            <div className='logout'></div>
+          </div>
         </div>
       </div>
 
@@ -170,10 +188,14 @@ function Gallery() {
                   <div></div>
                   <div></div>
                 </div>
+                <div className='upload-progress'>
+                  <div className='progress-bar' style={{ width: `${progress}%` }}></div>
+                  <div className='progress-text'>{progress}%</div>
+                </div>
               </div>
             ) : (
               <div className='upload-form'>
-                <h2>Upload Photo</h2>
+                <h2>Upload Photos</h2>
                 <div className="file-input-container">
                   <input
                     type="file"
@@ -181,6 +203,7 @@ function Gallery() {
                     ref={fileInputRef}
                     onChange={handleFileChange}
                     className="hidden-input"
+                    multiple
                   />
                   <label htmlFor="file-upload" className="custom-file-input">
                     {fileName || 'Choose a file'}

@@ -183,6 +183,33 @@ img {
   50% { transform: rotate(2deg); }
 }
 
+/* upload progress */
+.upload-progress {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  width: calc(100% - 20px);
+  height: 20px;
+  background-color: #f3f3f3;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: hsl(176, 37%, 60%);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: #666;
+}
+
 /* for mobile*/
 @media (max-width: 600px) {
   .nav-bar {
@@ -301,15 +328,16 @@ img {
 }
 
 .profile-content {
-    height: 0px;
+    height: fit-content;
     position: absolute;
     width: 300px;
-    right: 11px;
+    right: -320px;
     z-index: 2;
     border-radius: 21px;
-    transition: all 0.5s ease-in-out;
+    transition: all 0.2s ease-in-out;
     background-color: hsl(166, 21%, 88%);
     box-shadow: -3px 3px 6px rgba(0, 0, 0, 0.79);
+    font-weight: 600;
 }
 .outside-profile {
   position: absolute;
@@ -318,6 +346,32 @@ img {
   top: 0;
   left: 0;
   z-index: 2;
+}
+.profile-content-infos {
+  display: grid;
+  justify-items: center;
+}
+.email {
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+  width: 260px;
+  text-overflow: ellipsis;
+}
+.profile-picture {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 150px;
+  width: 150px;
+  border: solid 2px black;
+  border-radius: 50%;
+}
+.first-last-name {
+  text-align: center;
+  overflow: hidden;
+  width: 260px;
+  text-overflow: ellipsis;
 }
 
 /* upload section*/
