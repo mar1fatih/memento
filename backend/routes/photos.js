@@ -1,5 +1,5 @@
 import express from 'express';
-import { uploadPhoto, getPhotos } from '../controllers/photos.js';
+import { uploadPhoto, getPhotos, deletePhoto } from '../controllers/photos.js';
 import { verifyToken } from '../middlewares/auth.js';
 import multer from 'multer';
 
@@ -9,5 +9,6 @@ const upload = multer({ storage });
 
 router.post('/upload', verifyToken, upload.single('photo'), uploadPhoto);
 router.get('/', verifyToken, getPhotos);
+router.delete('/:id', verifyToken, deletePhoto);
 
 export default router;

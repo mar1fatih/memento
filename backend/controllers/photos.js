@@ -37,3 +37,16 @@ export const getPhotos = async (req, res) => {
     res.status(500).json({ error: 'Fetch failed' });
   }
 };
+
+export const deletePhoto = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const photo = await Photo.findById(id);
+    if (!photo) return res.status(404).json({ error: 'Photo not found' });
+    await cloudinary.uploader.destroy(photo.public_id);
+    await Photo.findByIdAndDelete(id);
+    res.status(204).json();
+  } catch (err) {
+    res.status(500).json({ error: 'Delete failed' });
+  }
+};

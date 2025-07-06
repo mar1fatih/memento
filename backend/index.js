@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 
 import authRoutes from './routes/auth.js';
 import photoRoutes from './routes/photos.js';
+import userRoutes from './routes/user.js';
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/photos', photoRoutes);
+app.use('/api/', userRoutes);
 
 const PORT = process.env.PORT || 5000;
 
