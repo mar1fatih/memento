@@ -15,6 +15,7 @@ function Gallery() {
   const [galleryClicked, setGalleryClicked] = useState(true); // State to hold a boolean for whether the gallery section is clicked
   const [progress, setProgress] = useState(0); // State to hold the progress of the upload
   const [userInfo, setUserInfo] = useState({}); // State to hold user information
+  const [profilePicture, setProfilePicture] = useState(null); // State to hold the profile picture
 
   const fileInputRef = useRef(null);
   const [fileName, setFileName] = useState('');
@@ -94,6 +95,30 @@ function Gallery() {
     }
   }
 
+  // Handle profile picture change
+  const handleProfilePictureChange = (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setProfilePicture(e.target.files[0]);
+    const formData = new FormData();
+    formData.append('profilePicture', e.target.files[0]);
+    API.post('/photos/profile-picture', formData)
+      .then((res) => {
+        setUserInfo((prev) => ({
+          ...prev,
+          profilePicture: res.data.profilePicture,
+        }));
+        setProfilePicture(res.data.profilePicture.replace('/upload/', '/upload/c_scale,h_200/'));
+      })
+      .catch((err) => {
+        console.error('Failed to upload profile picture:', err);
+      });
+    setIsLoading(false);
+    setProfileRight('-320px'); // Close the profile content after changing the picture
+    setProfileOutside('0%'); // Reset the outside profile content height
+    setRefresh(!refresh); // Refresh the gallery to show the new profile picture
+  }
+
   // Fetch photos from the API when the component mounts or when refresh state changes
   useEffect(() => {
     API.get('/user')
@@ -105,7 +130,6 @@ function Gallery() {
           lastName: res.data.lastName,
           profilePicture: res.data.profilePicture === 'none' ? null : res.data.profilePicture,
         });
-        console.log(userInfo);
       })
       .catch((err) => {
         console.log(err.message);
@@ -151,12 +175,17 @@ function Gallery() {
         <div className='profile-content' style={{ right: profileRight }}>
           <div className='profile-content-infos'>
             <div className='email'>{userInfo.email || '---------------'}</div>
-            <div className='profile-picture' style={{ backgroundImage: `url(${userInfo.profilePicture || './src/assets/empty_profile_photo.png'})` }}></div>
+            <div className='profile-picture' style={{ backgroundImage: `url(${userInfo.profilePicture || './src/assets/empty_profile_photo.png'})` }}>
+            <input type='file' accept='image/*' id='profile-picture-input' style={{ display: 'none' }} onChange={handleProfilePictureChange} />
+            <label htmlFor='profile-picture-input' className='profile-picture-label'></label>
+            </div>
             <div className='first-last-name'>{`${userInfo.lastName || '------'} ${userInfo.firstName || '-------'}`}</div>
           </div>
           <div className='profile-content-chnginfos'>
-            <div className='change-info'></div>
-            <div className='logout'></div>
+            <div className='change-info'>Change account infos</div>
+            <div className='logout' onClick={logout}>
+              <p>Logout</p>
+              </div>
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'https://memento-production-41f4.up.railway.app/api',
+  baseURL: 'http://localhost:5000/api',
 });
 
 API.interceptors.request.use((req) => {
