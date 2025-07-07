@@ -70,12 +70,14 @@ export const uploadProfilePicture = async (req, res) => {
         if (oldPublicId && oldPublicId !== 'none') {
           await cloudinary.uploader.destroy(oldPublicId);
         }
+        console.log('Profile picture uploaded:', result.secure_url);
         res.status(200).json(user);
       }
     );
 
     result.end(file.buffer);
   } catch (err) {
+    console.error('Error uploading profile picture:', err);
     res.status(500).json({ error: 'Upload failed' });
   }
 };
