@@ -14,6 +14,7 @@ function Gallery() {
   const [profileOutside, setProfileOutside] = useState('0%'); // State to hold the height of the outside profile content and the functionality
   const [galleryClicked, setGalleryClicked] = useState(true); // State to hold a boolean for whether the gallery section is clicked
   const [progress, setProgress] = useState(0); // State to hold the progress of the upload
+  const [userInfo, setUserInfo] = useState({}); // State to hold user information
 
   const fileInputRef = useRef(null);
   const [fileName, setFileName] = useState('');
@@ -95,6 +96,20 @@ function Gallery() {
 
   // Fetch photos from the API when the component mounts or when refresh state changes
   useEffect(() => {
+    API.get('/user')
+      .then((res) => {
+        setUserInfo({
+          email: res.data.email,
+          id: res.data._id,
+          firstName: res.data.firstName,
+          lastName: res.data.lastName,
+          profilePicture: res.data.profilePicture === 'none' ? null : res.data.profilePicture,
+        });
+        console.log(userInfo);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
     setIsLoading(true);
     API.get('/photos')
       .then((res) => {
@@ -135,9 +150,9 @@ function Gallery() {
         <div className='outside-profile' style={{ height: profileOutside }} onClick={handleProfileClick}></div>
         <div className='profile-content' style={{ right: profileRight }}>
           <div className='profile-content-infos'>
-            <div className='email'>example@gmail.com</div>
-            <div className='profile-picture' style={{ backgroundImage: 'url(./src/assets/empty_profile_photo.png)'}}></div>
-            <div className='first-last-name'>Marouane Fatih</div>
+            <div className='email'>{userInfo.email || '---------------'}</div>
+            <div className='profile-picture' style={{ backgroundImage: `url(${userInfo.profilePicture || './src/assets/empty_profile_photo.png'})` }}></div>
+            <div className='first-last-name'>{`${userInfo.lastName || '------'} ${userInfo.firstName || '-------'}`}</div>
           </div>
           <div className='profile-content-chnginfos'>
             <div className='change-info'></div>

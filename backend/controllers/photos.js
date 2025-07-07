@@ -1,4 +1,5 @@
 import Photo from '../models/Photo.js';
+import User from '../models/User.js';
 import cloudinary from '../config/cloudinary.js';
 
 export const uploadPhoto = async (req, res) => {
@@ -48,5 +49,33 @@ export const deletePhoto = async (req, res) => {
     res.status(204).json();
   } catch (err) {
     res.status(500).json({ error: 'Delete failed' });
+  }
+};
+
+export const uploadProfilePicture = async (req, res) => {
+  try {
+    const file = req.file;
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    const oldPublicId = user.picture_public_id;
+    const result = await cloudinary.uploader.upload_stream(
+      { folder: 'memento/profile_pictures' },
+      async (error, result) => {
+        if (error) return res.status(500).json({ error });
+        const user = await User.findByIdAndUpdate(
+          req.user.id,
+          { profilePicture: result.secure_url, picture_public_id: result.public_id },
+          { new: true }
+        );
+        if (oldPublicId && oldPublicId !== 'none') {
+          await cloudinary.uploader.destroy(oldPublicId);
+        }
+        res.status(200).json(user);
+      }
+    );
+
+    result.end(file.buffer);
+  } catch (err) {
+    res.status(500).json({ error: 'Upload failed' });
   }
 };
