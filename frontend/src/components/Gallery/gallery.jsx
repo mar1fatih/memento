@@ -15,7 +15,7 @@ function Gallery() {
   const [galleryClicked, setGalleryClicked] = useState(true); // State to hold a boolean for whether the gallery section is clicked
   const [progress, setProgress] = useState(0); // State to hold the progress of the upload
   const [userInfo, setUserInfo] = useState({}); // State to hold user information
-  const [profilePicture, setProfilePicture] = useState(null); // State to hold the profile picture
+  const [profilePicture, setProfilePicture] = useState('./src/assets/empty_profile_photo.png'); // State to hold the profile picture
 
   const fileInputRef = useRef(null);
   const [fileName, setFileName] = useState('');
@@ -99,16 +99,11 @@ function Gallery() {
   const handleProfilePictureChange = (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setProfilePicture(e.target.files[0]);
     const formData = new FormData();
     formData.append('profilePicture', e.target.files[0]);
     API.post('/photos/profile-picture', formData)
       .then((res) => {
-        setUserInfo((prev) => ({
-          ...prev,
-          profilePicture: res.data.profilePicture,
-        }));
-        setProfilePicture(res.data.profilePicture.replace('/upload/', '/upload/c_scale,h_200/'));
+        setProfilePicture(res.data.profilePicture);
       })
       .catch((err) => {
         console.error('Failed to upload profile picture:', err);
@@ -130,6 +125,9 @@ function Gallery() {
           lastName: res.data.lastName,
           profilePicture: res.data.profilePicture === 'none' ? null : res.data.profilePicture,
         });
+        if (res.data.profilePicture !== 'none') {
+          setProfilePicture(res.data.profilePicture)
+        }
       })
       .catch((err) => {
         console.log(err.message);
@@ -170,12 +168,12 @@ function Gallery() {
       <Header />
 
       <div className='profile-header'>
-        <div className='profile-icon' style={{ backgroundImage: 'url(./src/assets/empty_profile_photo.png)' }} onClick={handleProfileClick}></div>
+        <div className='profile-icon' style={{ backgroundImage: `url(${profilePicture.replace('/upload/', '/upload/c_scale,h_200/')})` }} onClick={handleProfileClick}></div>
         <div className='outside-profile' style={{ height: profileOutside }} onClick={handleProfileClick}></div>
         <div className='profile-content' style={{ right: profileRight }}>
           <div className='profile-content-infos'>
             <div className='email'>{userInfo.email || '---------------'}</div>
-            <div className='profile-picture' style={{ backgroundImage: `url(${userInfo.profilePicture || './src/assets/empty_profile_photo.png'})` }}>
+            <div className='profile-picture' style={{ backgroundImage: `url(${profilePicture.replace('/upload/', '/upload/c_scale,h_400/')})` }}>
             <input type='file' accept='image/*' id='profile-picture-input' style={{ display: 'none' }} onChange={handleProfilePictureChange} />
             <label htmlFor='profile-picture-input' className='profile-picture-label'></label>
             </div>
