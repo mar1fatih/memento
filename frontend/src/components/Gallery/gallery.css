@@ -299,8 +299,15 @@ img {
     top: 14px;
     border: solid 1px black;
 }
+.profile-icon-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transition: background-color 0.2s ease-in-out;
+}
 
-.profile-icon:hover {
+.profile-icon-overlay:hover {
     background-color: hsla(0, 0%, 0%, 0.228);
     cursor: pointer;
 }
@@ -349,6 +356,12 @@ img {
   display: block;
   width: 100%;
   height: 100%;
+  border-radius: 50%;
+}
+.profile-picture-label:hover {
+  background-color: hsla(0, 0%, 0%, 0.228);
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
 }
 .first-last-name {
   text-align: center;

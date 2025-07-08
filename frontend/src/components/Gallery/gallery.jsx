@@ -168,19 +168,21 @@ function Gallery() {
       <Header />
 
       <div className='profile-header'>
-        <div className='profile-icon' style={{ backgroundImage: `url(${profilePicture.replace('/upload/', '/upload/c_scale,h_200/')})` }} onClick={handleProfileClick}></div>
+        <div className='profile-icon' style={{ backgroundImage: `url(${profilePicture.replace('/upload/', '/upload/c_scale,h_200/')})` }} onClick={handleProfileClick}>
+          <div className='profile-icon-overlay'></div>
+        </div>
         <div className='outside-profile' style={{ height: profileOutside }} onClick={handleProfileClick}></div>
         <div className='profile-content' style={{ right: profileRight }}>
           <div className='profile-content-infos'>
             <div className='email'>{userInfo.email || '---------------'}</div>
             <div className='profile-picture' style={{ backgroundImage: `url(${profilePicture.replace('/upload/', '/upload/c_scale,h_400/')})` }}>
-            <input type='file' accept='image/*' id='profile-picture-input' style={{ display: 'none' }} onChange={handleProfilePictureChange} />
-            <label htmlFor='profile-picture-input' className='profile-picture-label'></label>
+              <input type='file' accept='image/*' id='profile-picture-input' style={{ display: 'none' }} onChange={handleProfilePictureChange} />
+              <label htmlFor='profile-picture-input' className='profile-picture-label'></label>
             </div>
             <div className='first-last-name'>{`${userInfo.lastName || '------'} ${userInfo.firstName || '-------'}`}</div>
           </div>
           <div className='profile-content-chnginfos'>
-            <div className='change-info'>Change account infos</div>
+            <div className='change-info' onClick={() => { window.location.href = '/account'; }}>Change account infos</div>
             <div className='logout' onClick={logout}>
               <p>Logout</p>
               </div>
