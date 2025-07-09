@@ -14,6 +14,9 @@ export const getUserInfo = async (req, res) => {
 export const updateUserInfo = async (req, res) => {
   try {
     const { firstName, lastName, password } = req.body;
+    if (password.lenght <= 7 && !password) {
+      return (res.status(400).json({ msg: "invalid password"}));
+    }
     const hashed = await bcrypt.hash(password, 10);
     const user = await User.findByIdAndUpdate(
       req.user.id,
