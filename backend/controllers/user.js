@@ -15,7 +15,7 @@ export const updateUserInfo = async (req, res) => {
   try {
     let user = null;
     const { firstName, lastName, password } = req.body;
-    if (password.lenght <= 7 && password) {
+    if (password && password.lenght <= 7) {
       return (res.status(400).json({ msg: "invalid password"}));
     }
     if (password) {
