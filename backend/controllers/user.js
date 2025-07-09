@@ -13,16 +13,25 @@ export const getUserInfo = async (req, res) => {
 
 export const updateUserInfo = async (req, res) => {
   try {
+    let user = null;
     const { firstName, lastName, password } = req.body;
-    if (password.lenght <= 7 && !password) {
+    if (password.lenght <= 7 && password) {
       return (res.status(400).json({ msg: "invalid password"}));
     }
-    const hashed = await bcrypt.hash(password, 10);
-    const user = await User.findByIdAndUpdate(
+    if (password) {
+      const hashed = await bcrypt.hash(password, 10);
+      user = await User.findByIdAndUpdate(
       req.user.id,
       { firstName, lastName, password: hashed },
       { new: true }
-    );
+      );
+    } else {
+      user = await User.findByIdAndUpdate(
+      req.user.id,
+      { firstName, lastName },
+      { new: true }
+      );
+    }
     if (!user) return res.status(404).json({ msg: "User not found" });
     res.json(user);
   } catch (error) {
