@@ -33,7 +33,7 @@ export const updateUserInfo = async (req, res) => {
       );
     }
     if (!user) return res.status(404).json({ msg: "User not found" });
-    res.json(user);
+    res.status(204).json({msg: "user updated"});
   } catch (error) {
     console.log(error);
     res.status(500).json({ msg: "Server error" });
