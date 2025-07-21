@@ -1,13 +1,6 @@
 .header {
     height: 65px;
 }
-img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
 .gallery-body {
     display: flex;
     padding-bottom: 7px;
@@ -316,7 +309,8 @@ img {
     height: fit-content;
     position: absolute;
     width: 300px;
-    right: -320px;
+    right: 11px;
+    transform: translatey(-411px);
     z-index: 2;
     border-radius: 21px;
     transition: all 0.2s ease-in-out;

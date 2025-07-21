@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import API from '../../api/api.js';
-import { useEffect } from 'react';
-import './Account.css';
+import { useEffect, useRef } from 'react';
+import './account.css';
 
 function Account() {
   const [userInfo, setUserInfo] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [oldPassword, setOldPassword] = useState('');
+  const [chngPass, setChngPass] = useState(false);
+  const profilePicRef = useRef(null);
 
   useEffect(() => {    
     // Create twinkling stars
@@ -22,7 +22,7 @@ function Account() {
     
     for (let i = 0; i < starCount; i++) {
       const star = document.createElement('div');
-      star.classList.add('star');
+      star.classList.add('star-account');
       
       const size = Math.random() * 2 + 1;
       star.style.width = `${size}px`;
@@ -40,6 +40,9 @@ function Account() {
     API.get('/user')
       .then((res) => {
         setUserInfo(res.data);
+        setFirstName(res.data.firstName);
+        setLastName(res.data.lastName);
+        profilePicRef.current = res.data.profilePicture.replace('/upload/', '/upload/h_200/');
         setIsLoading(false);
       })
       .catch((err) => {
@@ -60,7 +63,7 @@ function Account() {
     if (/[^A-Za-z0-9]/.test(password)) strength += 20;
 
     // Update password strength bar
-    const strengthBar = document.querySelector('.password-strength-bar');
+    const strengthBar = document.querySelector('.password-strength-bar-account');
     if (strengthBar) {
       strengthBar.style.width = `${strength}%`;
       
@@ -85,83 +88,95 @@ function Account() {
       return;
     }
 
-    try {
-      const response = await API.put('/user', {
-        firstName,
-        lastName,
-        password
-      });
-      if (response.status === 204) {
-        alert('your account is successfully updated!');
-        window.location.href = '/gallery';
+    if (password) {
+      try {
+        const response = await API.put('/user', {
+          firstName,
+          lastName,
+          password
+        });
+        if (response.status === 204) {
+          alert('your account is successfully updated!');
+          window.location.href = '/gallery';
+        }
+      } catch (error) {
+          setIsLoading(false);
+          alert('invalid password 8 characters or more');
       }
-    } catch (error) {
-        setIsLoading(false);
-        alert(error + ' Password is wrong');
+    } else {
+      try {
+        const response = await API.put('/user', {
+          firstName,
+          lastName
+        });
+        if (response.status === 204) {
+          alert('your account is successfully updated!');
+          window.location.href = '/gallery';
+        }
+      } catch (error) {
+          setIsLoading(false);
+          alert(error + ' An error occured');
+      }
     }
   };
 
   return (
-    <div className="register-body">
-      <div className="stars" id="stars"></div>
+    <div className="account-body">
+      <div className="stars-account" id="stars"></div>
       
-      <div className="register-container">
-        <div className="register-header">
+      <div className="account-container">
+        <div className="account-header">
           <h1>update your account information</h1>
         </div>
+        {profilePicRef.current && profilePicRef.current !== 'none' ? (
+          <div className='account-profile-pic' style={{backgroundImage: `url(${profilePicRef.current})`}}></div>
+        ) : (<></>)}
         
         <form onSubmit={handleSubmit}>
-          <div className="name-fields">
-            <div className="register-input-group">
+          <div className="name-fields-account">
+            <div className="account-input-group">
               <input type="text" id="firstName" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
               <label htmlFor="firstName">First Name</label>
             </div>
             
-            <div className="register-input-group">
+            <div className="account-input-group">
               <input type="text" id="lastName" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
               <label htmlFor="lastName">Last Name</label>
             </div>
           </div>
-          
-          <div className="register-input-group">
-            <input 
-              type="password" 
-              id="Oldpassword" 
-              required 
-              value={password}
-              onChange={(e) => setOldPassword(e.target.value)}
-            />
-            <label htmlFor="Oldpassword">*Old Password</label>
-          </div>
 
-          <div className="register-input-group">
-            <input 
-              type="password" 
-              id="password" 
-              required 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <label htmlFor="password">Password</label>
-            <div className="password-strength">
-              <div className="password-strength-bar"></div>
-            </div>
-          </div>
-        
-          <div className="register-input-group">
-            <input type="password" id="confirmPassword" required onChange={(e) => setConfirmPassword(e.target.value)} />
-            <label htmlFor="confirmPassword">Confirm Password</label>
-          </div>
+          {chngPass ? (
+            <>
+              <div className="account-input-group">
+                <input 
+                  type="password"
+                  id="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <label htmlFor="password">New Password</label>
+                <div className="password-strength-account">
+                  <div className="password-strength-bar-account"></div>
+                </div>
+              </div>
+                
+              <div className="account-input-group">
+                <input type="password" id="confirmPassword" required value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                <label htmlFor="confirmPassword">Confirm Password</label>
+              </div>
+
+              <button className="account-button-pass-keep" onClick={() => {setChngPass(false)}}>Keep Password</button>
+            </>
+          ) : (
+            <button className="account-button" onClick={() => {setChngPass(true)}}>Change Password</button>
+          )}
 
           {isLoading ? (
-            <div className="spinner"></div>
+            <div className="spinner-account"></div>
             ) : (
-              <button type="submit" className="register-button">Register</button>
+              <button type="submit" className="account-button">Update</button>
               )}
-          
-          <div className="login-link">
-            <p>{'(*) Required'}</p>
-          </div>
         </form>
       </div>
     </div>

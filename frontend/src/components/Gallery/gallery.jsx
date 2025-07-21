@@ -1,16 +1,16 @@
 import { useEffect, useState, useRef } from 'react';
 import API from '../../api/api.js';
 import Header from '../Header/header.jsx';
+import Photos from '../photos/photos.jsx';
 import './gallery.css';
 
 function Gallery() {
-  const [photos, setPhotos] = useState([]); // State to hold the photos fetched from the API
   const [files, setFiles] = useState([]); // State to hold the files selected for upload
   const [isLoading, setIsLoading] = useState(false); // State to hold a value of is loading
   const [isUploading, setIsUploading] = useState(false); // State to hold a value of is uploading
   const [refresh, setRefresh] = useState(false); // State to hold a boolean for refreshing the gallery
   const [isOpen, setIsOpen] = useState(false); // State to hold a boolean for sidebar visibility
-  const [profileRight, setProfileRight] = useState('-320px'); // State to hold the right of the profile content and the visibility
+  const [profileRight, setProfileRight] = useState('translatey(-411px)'); // State to hold the right of the profile content and the visibility
   const [profileOutside, setProfileOutside] = useState('0%'); // State to hold the height of the outside profile content and the functionality
   const [galleryClicked, setGalleryClicked] = useState(true); // State to hold a boolean for whether the gallery section is clicked
   const [progress, setProgress] = useState(0); // State to hold the progress of the upload
@@ -86,11 +86,11 @@ function Gallery() {
 
   // Handle profile click to toggle profile content visibility
   const handleProfileClick = () => {
-    if (profileRight === '-320px') {
-      setProfileRight('11px');
+    if (profileRight === 'translatey(-411px)') {
+      setProfileRight('translatey(0px)');
       setProfileOutside('100%');
     } else {
-      setProfileRight('-320px');
+      setProfileRight('translatey(-411px)');
       setProfileOutside('0%');
     }
   }
@@ -109,13 +109,14 @@ function Gallery() {
         console.error('Failed to upload profile picture:', err);
       });
     setIsLoading(false);
-    setProfileRight('-320px'); // Close the profile content after changing the picture
+    setProfileRight('translateX(400px)'); // Close the profile content after changing the picture
     setProfileOutside('0%'); // Reset the outside profile content height
     setRefresh(!refresh); // Refresh the gallery to show the new profile picture
   }
 
   // Fetch photos from the API when the component mounts or when refresh state changes
   useEffect(() => {
+    setIsLoading(true);
     API.get('/user')
       .then((res) => {
         setUserInfo({
@@ -128,22 +129,13 @@ function Gallery() {
         if (res.data.profilePicture !== 'none') {
           setProfilePicture(res.data.profilePicture)
         }
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
-    setIsLoading(true);
-    API.get('/photos')
-      .then((res) => {
-        setPhotos(res.data);
         setIsLoading(false);
       })
       .catch((err) => {
-        if (err.response && (err.response.status === 401 || err.response.status === 403)) window.location.href = '/login';
-        else if (err.message === "Network Error") setTimeout(() => { setRefresh(!refresh) }, 2000);
-        else console.error('Failed to fetch photos:', err);
+        console.log(err.message);
+        window.location.href = '/login';
       });
-  }, [refresh]);
+  }, []);
 
   return (
     <div>
@@ -172,7 +164,7 @@ function Gallery() {
           <div className='profile-icon-overlay'></div>
         </div>
         <div className='outside-profile' style={{ height: profileOutside }} onClick={handleProfileClick}></div>
-        <div className='profile-content' style={{ right: profileRight }}>
+        <div className='profile-content' style={{ transform: profileRight }}>
           <div className='profile-content-infos'>
             <div className='email'>{userInfo.email || '---------------'}</div>
             <div className='profile-picture' style={{ backgroundImage: `url(${profilePicture.replace('/upload/', '/upload/c_scale,h_400/')})` }}>
@@ -213,16 +205,8 @@ function Gallery() {
                 </div>
               </div>
             ) : (
-              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                {photos.map((photo) => (
-                  <img
-                    key={photo._id}
-                    src={photo.optimizedUrl || photo.url.replace('/upload/', '/upload/c_scale,h_400/')}
-                    alt=""
-                    style={{ height: '200px', margin: '10px' }}
-                  />
-                ))}
-              </div>)}
+              <Photos />
+            )}
           </div>
           <div className='upload-section'>
             { isUploading ? (
