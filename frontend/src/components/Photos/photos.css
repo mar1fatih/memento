@@ -9,6 +9,7 @@
     filter: brightness(1.05);
     padding: 5px;
     background-color: hsl(210, 73%, 62%);
+    position: relative;
 }
 .photos-img {
     width: 100%;
@@ -17,19 +18,36 @@
     background-repeat: no-repeat;
     padding: 7px;
 }
+.photos-img:hover {
+    cursor: pointer;
+}
 .select {
-    position: relative;
+    position: absolute;
     width: 24px;
     height: 24px;
-    background-color: blue;
     border-radius: 50%;
+    z-index: 1;
+}
+.select:hover {
+    cursor: pointer;
 }
 .select-checked {
     position: absolute;
     display: none;
+    fill: white;
+}
+.select-checked:hover {
+    opacity: 1;
+    filter: brightness(1.5);
+    cursor: pointer;
 }
 .select-not-checked {
     position: absolute;
+    display: none;
+    fill: white;
+}
+.select-not-checked:hover {
+    cursor: pointer;
 }
 .check-icon {
     background-image: url('./src/assets/check.png');
@@ -47,4 +65,24 @@ svg {
 svg .select-checked, svg .select-not-checked {
     fill: #eee;
     opacity: 0.5;
+}
+
+.del-cancel-btn {
+    background-image: url('./src/assets/close_menu_icon.svg');
+    background-size: 25px;
+    background-repeat: no-repeat;
+    width: 25px;
+    height: 25px;
+}
+.del-cancel-btn:hover {
+    cursor: pointer;
+}
+.selected {
+    font-family: Google Sans,Roboto,Arial,sans-serif;
+    line-height: 1.75rem;
+    font-size: 1.375rem;
+    letter-spacing: 0em;
+    font-weight: 400;
+    color: var(--gm3-sys-color-on-background,#1f1f1f);
+    padding-left: 12px;
 }
