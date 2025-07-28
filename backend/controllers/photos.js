@@ -32,22 +32,33 @@ export const uploadPhoto = async (req, res) => {
 
 export const getPhotos = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
+    const page = parseInt(req.query.page) || 0;
+    const limit = parseInt(req.query.limit) || 0;
     const skip = (page - 1) * limit;
     const totalPhotos = await Photo.countDocuments({ userId: req.user.id });
-    const totalPages = Math.ceil(totalPhotos / limit);
-    const photos = await Photo.find({ userId: req.user.id })
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-    res.status(200).json({
-      photos,
-      page,
-      limit,
-      totalPhotos,
-      totalPages
-    });
+    if (page !== 0 && limit !== 0) {
+      const totalPages = Math.ceil(totalPhotos / limit);
+      const photos = await Photo.find({ userId: req.user.id })
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+      res.status(200).json({
+        photos,
+        page,
+        limit,
+        totalPhotos,
+        totalPages
+      });
+    } else {
+      const photos = await Photo.find({ userId: req.user.id });
+      res.status(200).json({
+        photos,
+        page: 0,
+        limit: 0,
+        totalPhotos,
+        totalPages: 0
+      });
+    }
   } catch (err) {
     res.status(500).json({ error: 'Fetch failed' });
   }
