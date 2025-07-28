@@ -5,6 +5,7 @@ import Gallery from './components/Gallery/gallery.jsx';
 import Account from './components/Account/account.jsx';
 import LandPage from './components/LandPage/landpage.jsx';
 import PhotoPreview from './components/PhotoPreview/photopreview.jsx';
+import NotFound from './components/NotFound/notfound.jsx';
 import './App.css'
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/account" element={<Account />} />
         <Route path='/gallery/:photoId' element={<PhotoPreview />}/>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
     </>
