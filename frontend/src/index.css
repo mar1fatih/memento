@@ -11,7 +11,7 @@ body, html {
   color: rgba(55, 53, 53, 0.87);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  background-color: hsl(170, 20%, 88%);
+  background-color: #cfe4fb;
   height: 100%;
 }
 a {

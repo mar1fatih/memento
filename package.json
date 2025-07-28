@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "react-infinite-scroll-component": "^6.1.0"
+  },
+  "start": "HOST=0.0.0.0 react-scripts start"
+}

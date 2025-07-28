@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import API from '../../api/api.js';
 import Header from '../Header/header.jsx';
-import Photos from '../photos/photos.jsx';
+import Photos from '../Photos/photos.jsx';
 import './gallery.css';
 
 function Gallery() {
@@ -16,6 +16,8 @@ function Gallery() {
   const [progress, setProgress] = useState(0); // State to hold the progress of the upload
   const [userInfo, setUserInfo] = useState({}); // State to hold user information
   const [profilePicture, setProfilePicture] = useState('./src/assets/empty_profile_photo.png'); // State to hold the profile picture
+  const [galleryWidth, setGalleryWidth] = useState(0);
+  const gelleryRef = useRef(null);
 
   const fileInputRef = useRef(null);
   const [fileName, setFileName] = useState('');
@@ -109,10 +111,28 @@ function Gallery() {
         console.error('Failed to upload profile picture:', err);
       });
     setIsLoading(false);
-    setProfileRight('translateX(400px)'); // Close the profile content after changing the picture
+    setProfileRight('translatey(-411px)'); // Close the profile content after changing the picture
     setProfileOutside('0%'); // Reset the outside profile content height
     setRefresh(!refresh); // Refresh the gallery to show the new profile picture
   }
+
+  useEffect(() => {
+    const observer = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        setGalleryWidth(entry.contentRect.width);
+      }
+    });
+
+    if (gelleryRef.current) {
+      observer.observe(gelleryRef.current);
+    }
+
+    return () => {
+      if (gelleryRef.current) {
+        observer.unobserve(gelleryRef.current);
+      }
+    };
+  }, []);
 
   // Fetch photos from the API when the component mounts or when refresh state changes
   useEffect(() => {
@@ -193,7 +213,7 @@ function Gallery() {
             <div className='upload-text'> Upload </div>
           </div>
         </div>
-        <div className='gallery-container'>
+        <div ref={gelleryRef} className='gallery-container'>
           <div className='photos-section'>
             <h2>Gallery</h2>
             {isLoading ? (
@@ -205,7 +225,7 @@ function Gallery() {
                 </div>
               </div>
             ) : (
-              <Photos />
+              <Photos refresh={refresh} galleryWidth={galleryWidth}/>
             )}
           </div>
           <div className='upload-section'>

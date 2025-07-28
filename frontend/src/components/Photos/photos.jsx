@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import API from '../../api/api.js';
 import './photos.css';
 
-function Photos() {
+function Photos({refresh, galleryWidth}) {
   const [photos, setPhotos] = useState([]);
   const [selectedPhotos, setSelectedPhotos] = useState([]);
   const [filteredSelect, setFileredSelect] = useState([]);
@@ -15,6 +15,22 @@ function Photos() {
   const [hovered, setHovered] = useState(null);
   const [checkHovered, setCheckHovered] = useState(null);
   const [selectionMode, setSelectionMode] = useState(false);
+  const [deleteWarning, setDeleteWarning] = useState(false);
+  const [deletingProccess, setDeletingProccess] = useState(false);
+  const [delProgress, setDelProgress] = useState(0);
+  const [pageWidth, setPageWidth] = useState(window.innerWidth);
+  const [showPhoto, setShowPhoto] = useState(null);
+
+  useEffect(() => {
+    const handleResize = () => setPageWidth(window.innerWidth);
+
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup on unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const observer = useRef();
   const lastPhoto = useCallback(ele => {
@@ -55,7 +71,51 @@ function Photos() {
     } else {
     setSelectedPhotos(prev => [...new Set([...prev, photoId])]);
     }
-    console.log(typeof photoId);
+  }
+
+  const handleDeletePhotos = () => {
+    setDeletingProccess(true);
+    for (let photo of filteredSelect) {
+      API.delete(`/photos/${photo}`)
+      .then((res) => {
+        setDelProgress(prev => prev + Math.ceil(100 / filteredSelect.length));
+      })
+      .catch(() => {
+        setDeletingProccess(false);
+        setDeleteWarning(false);
+        setSelectionMode(false)
+        setFileredSelect([]);
+        setSelectedPhotos([]);
+      });
+    }
+  }
+
+  const handleNext = () => {
+    const photoDate = new Date(showPhoto[3]);
+    const photo = photos.filter(photo => new Date(photo.createdAt) < photoDate );
+    if (photo) {
+      const photoone = photo[0];
+      setShowPhoto([
+        photoone._id,
+        photoone.public_id,
+        photoone.url,
+        photoone.createdAt,
+      ]);
+    }
+  }
+
+  const handlePrevious = () => {
+    const photoDate = new Date(showPhoto[3]);
+    const photo = photos.filter(photo => new Date(photo.createdAt) > photoDate );
+    if (photo) {
+      const photoone = photo[photo.length - 1];
+      setShowPhoto([
+        photoone._id,
+        photoone.public_id,
+        photoone.url,
+        photoone.createdAt,
+      ]);
+    }
   }
 
   useEffect(() => {
@@ -72,7 +132,7 @@ function Photos() {
         setError(true);
         setIsLoading(false);
       });
-  }, []);
+  }, [refresh]);
 
   useEffect(() => {
     setError(false);
@@ -106,35 +166,68 @@ function Photos() {
     }
   }, [selectedPhotos]);
 
+  useEffect(() => {
+    if (delProgress >= 100) {
+      setDeletingProccess(false);
+      setDeleteWarning(false);
+      setSelectionMode(false);
+      setFileredSelect([]);
+      setSelectedPhotos([]);
+      window.location.href = '/gallery';
+    }
+  }, [delProgress]);
+
   return (
     <>
         {selectionMode && (
-          <div 
+          <div
           style={{
             position: 'fixed',
             left: '50px',
             top: '20px',
             display: 'flex',
           }}
-        ><div className='del-cancel-btn' 
-          onClick={() => {
-            setSelectionMode(false)
-            setFileredSelect([]);
-            setSelectedPhotos([]);
-          }}
-        ></div>
-        <p className='selected'>{filteredSelect.length}&nbsp;selected</p></div>
+          >
+            <div className='del-cancel-btn' 
+              onClick={() => {
+                setSelectionMode(false)
+                setFileredSelect([]);
+                setSelectedPhotos([]);
+              }}
+            ></div>
+            <p className='selected'>{filteredSelect.length}&nbsp;selected</p>
+            <div className='trash' onClick={() => setDeleteWarning(true)}></div>
+          </div>
         )}
-        <div>selected items: {filteredSelect.length}</div>
+        {deleteWarning && (
+          <div className='outside-delete'>
+              <div className='delete-warning'>
+                { deletingProccess && (
+                  <>
+                  <p style={{ paddingBottom: '40px' }}>deleting...</p>
+                  <div className='delete-progress'>
+                    <div className='delete-progress-bar' style={{ width: `${delProgress}%` }}></div>
+                    <div className='delete-progress-text'>{delProgress}%</div>
+                  </div></>)}
+                { !deletingProccess && (<>
+                  <p>Are you sure you want to permanently delete these photos? You won’t be able to recover them.</p>
+                  <div className='delete-btn'>
+                    <div className='cancel-delete' onClick={() => setDeleteWarning(false)}>Cancel</div>
+                    <div className='confirm-delete' onClick={handleDeletePhotos}>Delete</div>
+                  </div>
+                </>)}
+              </div>
+          </div>
+        )}
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
           {photos.map((photo, index) =>
             <div
-            className='photos'
+            className={filteredSelect.includes(photo._id) ? 'photos photos-checked' : 'photos'}
             key={photo._id}
             style={{
-                height: '230px',
-                margin: '10px',
-                width: `${((photo.width / photo.height) * 230)}px`
+                height: pageWidth >= 600 ? `${Math.floor(galleryWidth / 4) - 7}px` : `${Math.floor(galleryWidth / 3) - 4}px`,
+                margin: pageWidth < 600 ? '1px' : '3px',
+                width: pageWidth >= 600 ? `${Math.floor(galleryWidth / 4) - 7}px` : `${Math.floor(galleryWidth / 3) - 4}px`
             }}
             onMouseEnter={() => handlePhotosMouseEnter(photo._id)}
             onMouseLeave={() => handlePhotosMouseLeave(photo._id)}
@@ -163,8 +256,14 @@ function Photos() {
                     className='photos-img'
                     style={{
                       backgroundImage: `url(${photo.optimizedUrl || photo.url.replace('/upload/', '/upload/c_scale,h_230/')})`,
-                      filter: photo._id === hovered && 'brightness(0.7)',
+                      filter: (photo._id === hovered || filteredSelect.includes(photo._id)) && 'brightness(0.7)',
                     }}
+                    onClick={() => {selectionMode ? handleCheckPhotos(photo._id) : setShowPhoto([
+                      photo._id,
+                      photo.public_id,
+                      photo.url,
+                      photo.createdAt,
+                    ])}}
                 >
                 </div>
             </div>
