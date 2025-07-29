@@ -6,13 +6,14 @@ import API from '../../api/api.js';
 function PhotoPreview() {
   const [photos, setPhotos] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const { photoId } = useParams();
 
   useEffect(() => {
     setIsLoading(true);
     API.get(`/photos/${photoId}`)
-      .then()
-      .catch((err) => <NotFound/>);
+      .then(res => console.log(res.status))
+      .catch((err) => setNotFound(true));
     API.get('/photos')
       .then((res) => {
         setPhotos([...res.data.photos]);
@@ -21,9 +22,11 @@ function PhotoPreview() {
   }, []);
 
   return (
-    <><div>{photos.map((photo) =>
+    <>
+        {notFound ? <NotFound/> : isLoading && <><div>{photos.map((photo) =>
         <div>photoUrl: {photo.url}</div>
-    )}</div></>
+        )}</div></>}
+    </>
   );
 }
 

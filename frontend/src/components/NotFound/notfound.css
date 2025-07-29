@@ -1,0 +1,335 @@
+/* Base Styles */
+.not-found-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Arial', sans-serif;
+  color: white;
+  text-align: center;
+}
+
+/* Stars Background */
+.stars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle 3s infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { opacity: 0.2; }
+  100% { opacity: 1; }
+}
+
+/* Content Styles */
+.content {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+  max-width: 600px;
+}
+
+.content h1 {
+  font-size: 8rem;
+  margin: 0;
+  color: #ff4d4d;
+  text-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+}
+
+.content h2 {
+  font-size: 2.5rem;
+  margin: 0.5rem 0 1rem;
+  color: #4df9ff;
+}
+
+.content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* Button Styles */
+.home-button {
+  background: linear-gradient(45deg, #ff4d4d, #f9cb28);
+  border: none;
+  color: white;
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(249, 203, 40, 0.3);
+  outline: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(249, 203, 40, 0.4);
+}
+
+.home-button:active {
+  transform: translateY(1px);
+}
+
+.home-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.home-button:hover::before {
+  left: 100%;
+}
+
+/* Astronaut Animation */
+.astronaut {
+  position: absolute;
+  width: 200px;
+  height: 300px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(10deg);
+  z-index: 1;
+  animation: float 6s ease-in-out infinite;
+}
+
+.helmet {
+  position: absolute;
+  width: 140px;
+  height: 140px;
+  background: #a09898;
+  border-radius: 50%;
+  top: 30px;
+  left: 30px;
+  box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.face {
+  position: absolute;
+  width: 100px;
+  height: 80px;
+  background: #f5d6ba;
+  border-radius: 50%;
+  top: 60px;
+  left: 50px;
+}
+
+.eyes {
+  position: absolute;
+  width: 100%;
+  top: 30px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.eye {
+  width: 15px;
+  height: 15px;
+  background: #333;
+  border-radius: 50%;
+  animation: blink 4s infinite;
+}
+
+.mouth {
+  position: absolute;
+  width: 30px;
+  height: 10px;
+  background: #333;
+  border-radius: 0 0 10px 10px;
+  top: 50px;
+  left: 35px;
+}
+
+.body {
+  position: absolute;
+  width: 100px;
+  height: 120px;
+  background: #a09898;
+  border-radius: 30px;
+  top: 150px;
+  left: 50px;
+  box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.left-arm, .right-arm {
+  position: absolute;
+  width: 30px;
+  height: 100px;
+  background: #a09898;
+  border-radius: 15px;
+  top: 150px;
+}
+
+.left-arm {
+  left: 20px;
+  transform: rotate(30deg);
+  animation: left-arm-move 4s infinite;
+}
+
+.right-arm {
+  right: 20px;
+  transform: rotate(-30deg);
+  animation: right-arm-move 4s infinite;
+}
+
+.left-leg, .right-leg {
+  position: absolute;
+  width: 30px;
+  height: 100px;
+  background: #a09898;
+  border-radius: 15px;
+  top: 260px;
+}
+
+.left-leg {
+  left: 60px;
+  transform: rotate(-10deg);
+}
+
+.right-leg {
+  right: 60px;
+  transform: rotate(10deg);
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translate(-50%, -50%) rotate(10deg); }
+  50% { transform: translate(-50%, -60%) rotate(5deg); }
+}
+
+@keyframes left-arm-move {
+  0%, 100% { transform: rotate(30deg); }
+  50% { transform: rotate(50deg); }
+}
+
+@keyframes right-arm-move {
+  0%, 100% { transform: rotate(-30deg); }
+  50% { transform: rotate(-50deg); }
+}
+
+@keyframes blink {
+  0%, 48%, 52%, 100% { height: 15px; }
+  50% { height: 5px; }
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  .content {
+    max-width: 600px;
+    padding: 2rem;
+  }
+  
+  .content h1 {
+    font-size: 8rem;
+  }
+  
+  .content h2 {
+    font-size: 2.5rem;
+  }
+  
+  .content p {
+    font-size: 1.2rem;
+  }
+  
+  .astronaut {
+    width: 200px;
+    height: 300px;
+    top: 50%;
+  }
+  
+  .helmet {
+    width: 140px;
+    height: 140px;
+    top: 30px;
+    left: 30px;
+  }
+  
+  .face {
+    width: 100px;
+    height: 80px;
+    top: 60px;
+    left: 50px;
+  }
+  
+  .eyes {
+    top: 30px;
+  }
+  
+  .eye {
+    width: 15px;
+    height: 15px;
+  }
+  
+  .mouth {
+    width: 30px;
+    height: 10px;
+    top: 50px;
+    left: 35px;
+  }
+  
+  .body {
+    width: 100px;
+    height: 120px;
+    top: 150px;
+    left: 50px;
+  }
+  
+  .left-arm, .right-arm {
+    width: 30px;
+    height: 100px;
+    top: 150px;
+  }
+  
+  .left-leg, .right-leg {
+    width: 30px;
+    height: 100px;
+    top: 260px;
+  }
+  
+  .left-leg {
+    left: 60px;
+  }
+  
+  .right-leg {
+    right: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  
+  .content h1 {
+    font-size: 4rem;
+    margin-top: 1rem;
+  }
+  
+  .content h2 {
+    font-size: 1.5rem;
+  }
+  
+  .home-button {
+    padding: 10px 20px;
+    min-width: 160px;
+  }
+}
