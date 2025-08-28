@@ -69,15 +69,30 @@
     width: 24px;
     fill: white;
     cursor: pointer;
-    margin: 0px 0 0 0;
+    margin: 0px 10px 0 0;
     height: 38px;
     border-radius: 50%;
+}
+.preview-info-tab {
+    height: 400px;
+    width: 300px;
+    background-color: red;
+    transform: translateX(-200px);
+    border-radius: 30px;
+    padding: 20px;
 }
 .preview-delete {
     width: 24px;
     fill: white;
     cursor: pointer;
-    margin: 0 20px 0 10px;
+    margin: 0 10px 0 10px;
     height: 46px;
 
+}
+.preview-download {
+    width: 24px;
+    fill: white;
+    cursor: pointer;
+    margin: 0 20px 0 10px;
+    height: 46px;
 }

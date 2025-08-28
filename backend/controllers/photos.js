@@ -12,6 +12,7 @@ export const uploadPhoto = async (req, res) => {
         const photo = new Photo({
           userId: req.user.id,
           url: result.secure_url,
+          name: result.original_filename,
           public_id: result.public_id,
           width: result.width,
           height: result.height,
