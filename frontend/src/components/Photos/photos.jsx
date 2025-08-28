@@ -191,7 +191,6 @@ function Photos({refresh, galleryWidth}) {
               </div>
           </div>
         )}
-        <div>page width: {pageWidth}</div>
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
           {photos.map((photo) =>
             <div

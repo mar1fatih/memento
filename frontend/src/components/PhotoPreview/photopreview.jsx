@@ -122,7 +122,7 @@ function PhotoPreview() {
                   <div>{currentPhoto.photo.size}</div>
                   <div>{currentPhoto.photo.height}/{currentPhoto.photo.width}</div>
                   <div>{currentPhoto.photo.format}</div>
-                  <div>description:</div>
+                  <div>{currentPhoto.photo.name}</div>
                 </div>
               </div>
               <div className='preview-delete'>

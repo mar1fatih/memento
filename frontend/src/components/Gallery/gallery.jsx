@@ -23,7 +23,13 @@ function Gallery() {
   const [fileName, setFileName] = useState('');
 
   const handleFileChange = (e) => {
-    const files = e.target.files;
+    const files = Array.from(e.target.files);
+    const imageFiles = files.filter(file => file.name.endsWith('.jpeg') || file.name.endsWith('.png') || file.name.endsWith('.jpg') || file.name.endsWith('.gif') || file.name.endsWith('.webp'));
+    if (imageFiles.length === 0) {
+      alert('Please select only image files!');
+      return;
+    }
+
     if (files.length > 0 && files.length < 2) {
       setFileName(files[0].name);
       setFiles(files);
@@ -68,7 +74,15 @@ function Gallery() {
       const formData = new FormData();
       formData.append('photo', files[i]);
       setProgress(Math.round(((i + 1) / files.length) * 100));
-      await API.post('/photos/upload', formData);
+      try {
+        await API.post('/photos/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+      } catch (error) {
+        console.error('Error uploading file:', files[i].name, error);
+      }
     }
     setFiles([]);
     setFileName('');
@@ -251,6 +265,7 @@ function Gallery() {
                     ref={fileInputRef}
                     onChange={handleFileChange}
                     className="hidden-input"
+                    accept="image/*"
                     multiple
                   />
                   <label htmlFor="file-upload" className="custom-file-input">
