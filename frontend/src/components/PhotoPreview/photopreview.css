@@ -1,0 +1,83 @@
+.photo-container {
+    height: 587px;
+    width: 1280px;
+    background-color: black;
+}
+.next-container {
+    opacity: 0;
+}
+.next-btn {
+    border-radius: 28px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    margin-top: -28px;
+    height: 56px;
+    width: 56px;
+    background-color: black;
+    fill: white;
+    right: 40px;
+    transition: opacity 0.3s linear;
+}
+.next-container:hover {
+    opacity: 0.8;
+    transition: opacity 0.2s linear;
+}
+.previous-container {
+    opacity: 0;
+}
+.previous-btn {
+    border-radius: 28px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    margin-top: -28px;
+    height: 56px;
+    width: 56px;
+    background-color: black;
+    fill: white;
+    left: 40px;
+    transition: opacity 0.3s linear;
+}
+.previous-container:hover {
+    opacity: 0.8;
+    transition: opacity 0.2s linear;
+}
+.preview-menu {
+    height: 72px;
+    background: linear-gradient(#000000b8, #fff0);
+    z-index: 3;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    transition: opacity 0.2s linear;
+    display: flex;
+}
+.preview-return-btn {
+    width: 23px;
+    fill: white;
+    cursor: pointer;
+    margin: 21px;
+}
+.preview-properties {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    align-items: center;
+}
+.preview-info {
+    width: 24px;
+    fill: white;
+    cursor: pointer;
+    margin: 0px 0 0 0;
+    height: 38px;
+    border-radius: 50%;
+}
+.preview-delete {
+    width: 24px;
+    fill: white;
+    cursor: pointer;
+    margin: 0 20px 0 10px;
+    height: 46px;
+
+}

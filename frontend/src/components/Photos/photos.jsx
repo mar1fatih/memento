@@ -90,34 +90,6 @@ function Photos({refresh, galleryWidth}) {
     }
   }
 
-  const handleNext = () => {
-    const photoDate = new Date(showPhoto[3]);
-    const photo = photos.filter(photo => new Date(photo.createdAt) < photoDate );
-    if (photo) {
-      const photoone = photo[0];
-      setShowPhoto([
-        photoone._id,
-        photoone.public_id,
-        photoone.url,
-        photoone.createdAt,
-      ]);
-    }
-  }
-
-  const handlePrevious = () => {
-    const photoDate = new Date(showPhoto[3]);
-    const photo = photos.filter(photo => new Date(photo.createdAt) > photoDate );
-    if (photo) {
-      const photoone = photo[photo.length - 1];
-      setShowPhoto([
-        photoone._id,
-        photoone.public_id,
-        photoone.url,
-        photoone.createdAt,
-      ]);
-    }
-  }
-
   useEffect(() => {
     setError(false);
     setIsLoading(true);
@@ -219,15 +191,16 @@ function Photos({refresh, galleryWidth}) {
               </div>
           </div>
         )}
+        <div>page width: {pageWidth}</div>
         <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-          {photos.map((photo, index) =>
+          {photos.map((photo) =>
             <div
             className={filteredSelect.includes(photo._id) ? 'photos photos-checked' : 'photos'}
             key={photo._id}
             style={{
-                height: pageWidth >= 600 ? `${Math.floor(galleryWidth / 4) - 7}px` : `${Math.floor(galleryWidth / 3) - 4}px`,
+                height: pageWidth >= 800 ? `${Math.floor(galleryWidth / 5) - 7}px` : pageWidth >= 600 ? `${Math.floor(galleryWidth / 4) - 8}px` : `${Math.floor(galleryWidth / 3) - 4}px`,
                 margin: pageWidth < 600 ? '1px' : '3px',
-                width: pageWidth >= 600 ? `${Math.floor(galleryWidth / 4) - 7}px` : `${Math.floor(galleryWidth / 3) - 4}px`
+                width: pageWidth >= 800 ? `${Math.floor(galleryWidth / 5) - 7}px` : pageWidth >= 600 ? `${Math.floor(galleryWidth / 4) - 8}px` : `${Math.floor(galleryWidth / 3) - 4}px`
             }}
             onMouseEnter={() => handlePhotosMouseEnter(photo._id)}
             onMouseLeave={() => handlePhotosMouseLeave(photo._id)}
@@ -258,12 +231,7 @@ function Photos({refresh, galleryWidth}) {
                       backgroundImage: `url(${photo.optimizedUrl || photo.url.replace('/upload/', '/upload/c_scale,h_230/')})`,
                       filter: (photo._id === hovered || filteredSelect.includes(photo._id)) && 'brightness(0.7)',
                     }}
-                    onClick={() => {selectionMode ? handleCheckPhotos(photo._id) : setShowPhoto([
-                      photo._id,
-                      photo.public_id,
-                      photo.url,
-                      photo.createdAt,
-                    ])}}
+                    onClick={() => {selectionMode ? handleCheckPhotos(photo._id) : window.location.href = `/gallery/${photo._id}`}}
                 >
                 </div>
             </div>
