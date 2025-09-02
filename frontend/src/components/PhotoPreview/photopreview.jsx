@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect, useRef, use} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import NotFound from '../NotFound/notfound.jsx';
 import API from '../../api/api.js';
@@ -17,8 +17,13 @@ function PhotoPreview() {
   const [left, setLeft] = useState(0);
   const [top, setTop] = useState(0);
   const [mouseActive, setMouseActive] = useState(false);
+  const [infoTab, setInfoTab] = useState(false);
+  const [deleteAction, setDeleteAction] = useState(false);
+  const [deletingProccess, setDeletingProccess] = useState(false);
+  const [delProgress, setDelProgress] = useState(0);
   const timerRef = useRef(null);
   const navigate = useNavigate();
+  const datetime = useRef({});
 
   const handleNext = () => {
     const photoDate = new Date(currentPhoto.photo.createdAt);
@@ -54,8 +59,58 @@ function PhotoPreview() {
 
     timerRef.current = setTimeout(() => {
       setMouseActive(false);
-    }, 2500);
+    }, 4000);
   }
+
+  //download photo
+  const handleDownload = async () => {
+    try {
+      // Fetch the image data
+      const response = await fetch(currentPhoto.photo.url, { mode: "cors" });
+      const blob = await response.blob();
+
+      // Create a temporary URL for the blob
+      const url = window.URL.createObjectURL(blob);
+
+      // Create a link and click it
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = currentPhoto.photo.name || "photo.jpg"; // Filename for download
+      link.click();
+
+      // Cleanup
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed:", error);
+    }
+  };
+
+  const deleteFromArray = photoId => {
+    setPhotos(prev => prev.filter(photo => photo._id != photoId ));
+  };
+
+  const handleDeletePhotos = () => {
+    const last = photos[0]._id;
+
+    setDeletingProccess(true);
+    if (currentPhoto.photo._id === photos[photos.length - 1]._id) last
+    API.delete(`/photos/${currentPhoto.photo._id}`)
+    .then(() => {
+      setDeleteAction(false);
+      setDeletingProccess(false);
+      setDelProgress(0);
+      deleteFromArray(currentPhoto.photo._id);
+      console.log(currentPhoto.photo._id, last);
+      if (currentPhoto.photo._id === last) handlePrevious();
+      else handleNext();
+    })
+    .catch(() => {
+      setDeletingProccess(false);
+      setDeleteAction(false);
+      setDelProgress(0);
+    });
+  }
+
 
   useEffect(() => {
     setIsLoading(true);
@@ -103,9 +158,62 @@ function PhotoPreview() {
     }
   }, [pageWidth, pageHeight, isLoading, currentPhoto]);
 
+  useEffect(() => {
+    if (!isLoading && !notFound) {
+      const dateObj = new Date(currentPhoto.photo.createdAt);
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+      console.log(dateObj.toLocaleString("en-US", { month: "long", timeZone: "UTC" }));
+
+      datetime.current = {
+        day: days[dateObj.getUTCDay()],
+        month: dateObj.toLocaleString("en-US", { month: "long", timeZone: "UTC" }),
+        year: currentPhoto.photo.createdAt.split("-")[0],
+        time: currentPhoto.photo.createdAt.split('T')[1].split(':').slice(0, 2).join(':'),
+      }
+    }
+  }, [currentPhoto, isLoading]);
+
+  useEffect(() => {
+    if (!deletingProccess) {
+      setDelProgress(0);
+      return;
+    }
+
+    if (delProgress >= 100) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setDelProgress(prev => prev + 1);
+    }, 30); // adjust speed here
+
+    return () => clearInterval(interval); // cleanup
+  }, [deletingProccess, delProgress, deleteAction]);
+
   return (
     <>
         {notFound ? <NotFound/> : !isLoading && <><div>
+          {deleteAction && <div className='delete-component'>
+          <div className='outside-delete'>
+              <div className='delete-warning'>
+                { deletingProccess && (
+                  <>
+                  <p style={{ paddingBottom: '40px' }}>deleting...</p>
+                  <div className='delete-progress'>
+                    <div className='delete-progress-bar' style={{ width: `${delProgress}%` }}></div>
+                    <div className='delete-progress-text'>{delProgress}%</div>
+                  </div></>)}
+                { !deletingProccess && (<>
+                  <p>Are you sure you want to permanently delete that photos? You won’t be able to recover it.</p>
+                  <div className='delete-btn'>
+                    <div className='cancel-delete' onClick={() => setDeleteAction(false)}>Cancel</div>
+                    <div className='confirm-delete' onClick={handleDeletePhotos}>Delete</div>
+                  </div>
+                </>)}
+              </div>
+          </div>
+          </div>}
           <div className='preview-menu' style={{ opacity: !mouseActive && 0 }} onMouseEnter={handleMouseEnter}>
             <div className='preview-return-btn' onClick={() => window.location.href = '../gallery'}>
               <svg width="24px" height="24px" viewBox="0 0 24 24">
@@ -113,24 +221,27 @@ function PhotoPreview() {
               </svg>
             </div>
             <div className='preview-properties'>
-              <div className='preview-info'>
+              <div className='preview-info' onClick={() => setInfoTab(prev => !prev)}>
                 <svg width="24px" height="24px" viewBox="0 0 24 24">
                   <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path>
                 </svg>
-                <div className='preview-info-tab'>
-                  <div>{currentPhoto.photo.public_id}</div>
-                  <div>{currentPhoto.photo.size}</div>
-                  <div>{currentPhoto.photo.height}/{currentPhoto.photo.width}</div>
-                  <div>{currentPhoto.photo.format}</div>
+                <div className='preview-info-tab' style={{ transform: !infoTab && 'translateY(-500px)'}}>
+                  <h2 style={{color: 'white', alignContent: 'center'}}>Info</h2>
                   <div>{currentPhoto.photo.name}</div>
+                  <div><b>Size</b> {(currentPhoto.photo.size / 1000000).toFixed(2)}mb</div>
+                  <div><b>Dimensions</b> {currentPhoto.photo.height}/{currentPhoto.photo.width}</div>
+                  <div><b>Uploaded at</b>
+                    <div style={{display: 'flex'}}><p style={{ fontWeight: 600}}>{datetime.current.day}</p>, {datetime.current.month} {datetime.current.year}</div>
+                    <div>{datetime.current.time} (UTC)</div>
+                  </div>
                 </div>
               </div>
-              <div className='preview-delete'>
+              <div className='preview-delete' onClick={() => setDeleteAction(true)}>
                 <svg width="24px" height="24px" viewBox="0 0 24 24">
                   <path d="M15 4V3H9v1H4v2h1v13c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V6h1V4h-5zm2 15H7V6h10v13zM9 8h2v9H9zm4 0h2v9h-2z"></path>
                 </svg>
               </div>
-              <div className='preview-download'>
+              <div className='preview-download' onClick={handleDownload}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640">
                   <path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 306.7L246.6 265.3C234.1 252.8 213.8 252.8 201.3 265.3C188.8 277.8 188.8 298.1 201.3 310.6L297.3 406.6C309.8 419.1 330.1 419.1 342.6 406.6L438.6 310.6C451.1 298.1 451.1 277.8 438.6 265.3C426.1 252.8 405.8 252.8 393.3 265.3L352 306.7L352 96zM160 384C124.7 384 96 412.7 96 448L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 448C544 412.7 515.3 384 480 384L433.1 384L376.5 440.6C345.3 471.8 294.6 471.8 263.4 440.6L206.9 384L160 384zM464 440C477.3 440 488 450.7 488 464C488 477.3 477.3 488 464 488C450.7 488 440 477.3 440 464C440 450.7 450.7 440 464 440z"/>
                 </svg>

@@ -76,10 +76,16 @@
 .preview-info-tab {
     height: 400px;
     width: 300px;
-    background-color: red;
+    background-color: #212123;
     transform: translateX(-200px);
     border-radius: 30px;
     padding: 20px;
+    display: grid;
+}
+.preview-info-tab > div {
+    color: white;
+    align-content: center;
+    padding: 0 0px 12px 20px;
 }
 .preview-delete {
     width: 24px;

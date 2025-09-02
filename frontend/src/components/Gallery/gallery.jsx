@@ -24,7 +24,7 @@ function Gallery() {
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
-    const imageFiles = files.filter(file => file.name.endsWith('.jpeg') || file.name.endsWith('.png') || file.name.endsWith('.jpg') || file.name.endsWith('.gif') || file.name.endsWith('.webp'));
+    const imageFiles = files.filter(file => file.name.endsWith('.jpeg') || file.name.endsWith('.png') || file.name.endsWith('.jpg') || file.name.endsWith('.gif') || file.name.endsWith('.webp') || file.name.endsWith('.JPG'));
     if (imageFiles.length === 0) {
       alert('Please select only image files!');
       return;
