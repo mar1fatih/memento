@@ -10,8 +10,8 @@ function PhotoPreview() {
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const { photoId } = useParams();
-  const [pageWidth ,setPageWidth] = useState(1280);
-  const [pageHeight, setPageHeight] = useState(587);
+  const [pageWidth ,setPageWidth] = useState(window.innerWidth);
+  const [pageHeight, setPageHeight] = useState(window.innerHeight);
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const [left, setLeft] = useState(0);
@@ -143,7 +143,7 @@ function PhotoPreview() {
   }, []);
 
   useEffect(() => {
-    if (!isLoading && !notFound) {
+    if (currentPhoto.photo && !notFound) {
       if (pageWidth > pageHeight / (currentPhoto.photo.height / currentPhoto.photo.width)) {
         setWidth(pageHeight / (currentPhoto.photo.height / currentPhoto.photo.width));
         setHeight(pageHeight);
@@ -156,7 +156,7 @@ function PhotoPreview() {
         setTop((pageHeight - (pageWidth * (currentPhoto.photo.height / currentPhoto.photo.width))) / 2);
       }
     }
-  }, [pageWidth, pageHeight, isLoading, currentPhoto]);
+  }, [pageWidth, pageHeight, isLoading, currentPhoto.photo]);
 
   useEffect(() => {
     if (!isLoading && !notFound) {
@@ -225,7 +225,13 @@ function PhotoPreview() {
                 <svg width="24px" height="24px" viewBox="0 0 24 24">
                   <path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path>
                 </svg>
-                <div className='preview-info-tab' style={{ transform: !infoTab && 'translateY(-500px)'}}>
+                <div className='preview-info-tab' style={{
+                    transform: !infoTab && `translateY(-500px)`,
+                    height: pageHeight <= 500 ? pageHeight - 100 + 'px' : '400px',
+                    width: pageWidth <= 800 ? pageWidth - 500 + 'px' : '300px',
+                    minWidth: '280px',
+                    minHeight: '300px',
+                  }}>
                   <h2 style={{color: 'white', alignContent: 'center'}}>Info</h2>
                   <div>{currentPhoto.photo.name}</div>
                   <div><b>Size</b> {(currentPhoto.photo.size / 1000000).toFixed(2)}mb</div>

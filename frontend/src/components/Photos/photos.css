@@ -7,7 +7,7 @@
     transform: scale(0.98);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     filter: brightness(1.05);
-    padding: 10px;
+    padding: 7px;
     background: linear-gradient(#f19693, #3d86cb);
     position: relative;
 }
@@ -145,6 +145,7 @@ svg .select-checked, svg .select-not-checked {
     margin: 10px;
     cursor: pointer;
     background-color: #aeaeff;
+    width: 100%;
 }
 .confirm-delete {
     border: 2px solid black;
@@ -153,6 +154,7 @@ svg .select-checked, svg .select-not-checked {
     margin: 10px;
     cursor: pointer;
     background-color: #fc4444;
+    width: 100%;
 }
 .cancel-delete:hover {
     background-color: #aeaeffc2;

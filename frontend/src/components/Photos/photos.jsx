@@ -35,6 +35,7 @@ function Photos({refresh, galleryWidth}) {
   const observer = useRef();
   const lastPhoto = useCallback(ele => {
     if (isLoading) return
+    if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && hasMore === true) {
         setPage(prev => totalPages > prev ? prev + 1 : prev);
