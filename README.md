@@ -37,7 +37,7 @@ Make sure you have the following software installed:
 
 1.  **Clone the Repository**
     ```sh
-    git clone [https://github.com/mar1fatih/memento.git](https://github.com/mar1fatih/YOUR-REPOSITORY-NAME.git)
+    git clone https://github.com/mar1fatih/memento.git
     cd memento
     ```
 
